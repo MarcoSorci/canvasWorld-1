@@ -59,21 +59,77 @@ class PlayerSprite extends RectSprite {
   constructor(x, y, width, height, speedX, speedY) {
     super(x, y, width, height, speedX, speedY, "magenta");
     this.isPlayer = true;
+    this.isActive = true;
+    this.isSolid = true;
+    this.isJumping = false;
+    this.hasWon = false;
   }
 
   update(canvas, controller) {
     if (controller.isUpClicked) {
-      this.speedY += -0.1;
+      if (this.isJumping === false) {
+        this.speedY += -10;
+        this.isJumping = true
+      }
+
     }
-    if (controller.isDownClicked) {
-      this.speedY += 0.1;
-    }
+    // if (controller.isDownClicked) {
+    //   this.speedY += 0.1;
+    // }
     if (controller.isRightClicked) {
-      this.speedX += 0.1;
+      this.speedX += 0.2;
     }
     if (controller.isLeftClicked) {
-      this.speedX += -0.1;
+      this.speedX += -0.2;
     }
+    const friction = Physics.getFriction();
+    this.speedX *= friction;
+    this.speedY *= friction;
+
+    const gravity = Physics.getGravity();
+    this.speedX += gravity.x;
+    this.speedY += gravity.y;
+
+
+
     super.update(canvas);
+  }
+
+  manageCollision(sprite, isHorizontal) {
+    if (isHorizontal) {
+      this.isJumping = false
+    }
+    if (sprite.isExit) {
+      this.hasWon = true
+    }
+    if (sprite.isEnemy) {
+      this.hasDied = true
+    }
+  }
+}
+
+class ExitSprite extends RectSprite {
+  constructor(x, y, width, height, speedX, speedY) {
+    super(x, y, width, height, speedX, speedY, "green");
+    this.isExit = true;
+  }
+}
+
+class EnemySprite extends RectSprite {
+  constructor(x, y, width, height, speedX, speedY, color, isVertical) {
+    super(x, y, width, height, speedX, speedY, color);
+    this.isEnemy = true;
+    this.isActive = true;
+    this.isSolid = false;
+
+    if (isVertical) {
+      this.speedY += 4;
+    } else {
+      this.speedX += 4;
+    }
+  }
+  manageCollision() {
+    this.speedX *= -1
+    this.speedY *= -1
   }
 }

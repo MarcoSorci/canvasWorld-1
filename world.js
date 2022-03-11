@@ -15,8 +15,8 @@ class World {
 
         const type = row[j];
         if (type !== 0) {
-            const sprite = this.createSprite(type, i, j, side);
-            sprites.push(sprite);
+          const sprite = this.createSprite(type, i, j, side);
+          sprites.push(sprite);
         }
       }
     }
@@ -25,14 +25,20 @@ class World {
 
 
   static createSprite(type, row, column, side) {
-      switch (type) {
-          case 1: 
-            return new RectSprite(side * column, side * row, side, side, 0, 0, "tomato");
-          case 2:
-            return new RectSprite(side * column, side * row, side, side, 0, 0, "blue");
-          default:
-            return new PlayerSprite(side * column, side * row, side, side, 0, 0);
-      }
+    switch (type) {
+      case 1:
+        return new RectSprite(side * column, side * row, side, side, 0, 0, "tomato");
+      // case 2:
+      //   return new RectSprite(side * column, side * row, side, side, 0, 0, "blue");
+      case 4:
+        return new ExitSprite(side * column, side * row, side, side, 0, 0);
+        case 5:
+        return new EnemySprite(side * column, side * row, side, side, 0, 0, "blue", true);
+        case 6:
+        return new EnemySprite(side * column, side * row, side, side, 0, 0, "orange", false);
+      default:
+        return new PlayerSprite(side * column, side * row, side, side, 0, 0);
+    }
   }
 
 }
